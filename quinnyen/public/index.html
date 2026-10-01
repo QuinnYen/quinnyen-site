@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quinn Yen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:oklch(0.98 0.004 60);
+    --fg:oklch(0.22 0.01 60);
+    --accent:oklch(0.55 0.13 35);
+    --border:oklch(0.9 0.006 60);
+    --border-soft:oklch(0.91 0.006 60);
+    --border-dashed:oklch(0.85 0.006 60);
+    --muted:oklch(0.45 0.01 60);
+    --muted-soft:oklch(0.55 0.01 60);
+    --muted-softer:oklch(0.6 0.01 60);
+    --panel:oklch(0.95 0.005 60);
+    --panel-border:oklch(0.88 0.006 60);
+    --panel-hover:oklch(0.9 0.02 35);
+    --row-hover:oklch(0.965 0.005 60);
+    --index-bg:oklch(0.95 0.006 60);
+    --index-fg:oklch(0.5 0.01 60);
+    --tag-bg:oklch(0.94 0.02 200);
+    --tag-fg:oklch(0.4 0.08 200);
+    --selection:oklch(0.9 0.05 35);
+    --icon-bg:var(--panel);
+    --icon-bg-hover:var(--panel-hover);
+  }
+  [data-theme="dark"]{
+    --bg:oklch(0.19 0.006 60);
+    --fg:oklch(0.92 0.004 60);
+    --accent:oklch(0.72 0.13 35);
+    --border:oklch(0.32 0.006 60);
+    --border-soft:oklch(0.3 0.006 60);
+    --border-dashed:oklch(0.36 0.006 60);
+    --muted:oklch(0.72 0.006 60);
+    --muted-soft:oklch(0.62 0.006 60);
+    --muted-softer:oklch(0.58 0.006 60);
+    --panel:oklch(0.25 0.006 60);
+    --panel-border:oklch(0.34 0.006 60);
+    --panel-hover:oklch(0.3 0.03 35);
+    --row-hover:oklch(0.24 0.006 60);
+    --index-bg:oklch(0.27 0.006 60);
+    --index-fg:oklch(0.75 0.006 60);
+    --tag-bg:oklch(0.28 0.03 200);
+    --tag-fg:oklch(0.78 0.06 200);
+    --selection:oklch(0.4 0.08 35);
+    --icon-bg:oklch(1 0 0);
+    --icon-bg-hover:oklch(0.92 0 0);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:oklch(0.19 0.006 60);
+      --fg:oklch(0.92 0.004 60);
+      --accent:oklch(0.72 0.13 35);
+      --border:oklch(0.32 0.006 60);
+      --border-soft:oklch(0.3 0.006 60);
+      --border-dashed:oklch(0.36 0.006 60);
+      --muted:oklch(0.72 0.006 60);
+      --muted-soft:oklch(0.62 0.006 60);
+      --muted-softer:oklch(0.58 0.006 60);
+      --panel:oklch(0.25 0.006 60);
+      --panel-border:oklch(0.34 0.006 60);
+      --panel-hover:oklch(0.3 0.03 35);
+      --row-hover:oklch(0.24 0.006 60);
+      --index-bg:oklch(0.27 0.006 60);
+      --index-fg:oklch(0.75 0.006 60);
+      --tag-bg:oklch(0.28 0.03 200);
+      --tag-fg:oklch(0.78 0.06 200);
+      --selection:oklch(0.4 0.08 35);
+      --icon-bg:oklch(1 0 0);
+      --icon-bg-hover:oklch(0.92 0 0);
+    }
+  }
+
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;transition:background .15s,color .15s;}
+  a{color:inherit;text-decoration:none;}
+  a:hover{color:var(--accent);}
+  ::selection{background:var(--selection);}
+
+  .banner{width:100%;height:400px;object-fit:cover;display:block;}
+  .wrap{max-width:1440px;margin:0 auto;padding:0 48px 20px;}
+
+  header{padding:16px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;}
+  .identity{display:flex;gap:20px;align-items:center;flex:1;min-width:0;}
+  .avatar{width:64px;height:64px;border-radius:50%;flex:none;object-fit:cover;display:block;}
+  .name-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  h1{margin:0;font:600 24px/1.2 Sora,-apple-system,sans-serif;letter-spacing:-.01em;}
+  .role{font:500 14px/1.4 Sora,sans-serif;color:var(--accent);}
+  .tagline{margin:4px 0 0;font-size:14px;line-height:1.4;color:var(--muted);max-width:60ch;}
+
+  .icon-links{display:flex;gap:14px;flex:none;align-items:center;}
+  .icon-link{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--icon-bg);border:1px solid var(--panel-border);transition:background .15s;}
+  .icon-link:hover{background:var(--icon-bg-hover);}
+  .icon-link img{width:30px;height:30px;}
+
+  .theme-toggle{position:fixed;right:24px;bottom:24px;z-index:100;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--panel-border);cursor:pointer;transition:background .15s;color:var(--fg);box-shadow:0 2px 10px oklch(0 0 0 / 0.12);}
+  .theme-toggle:hover{background:var(--panel-hover);}
+  .theme-toggle svg{width:22px;height:22px;}
+
+  main{padding-top:16px;display:grid;grid-template-columns:400px minmax(0,1fr);gap:28px;align-items:stretch;}
+  @media (max-width:800px){ main{grid-template-columns:1fr;} }
+
+  .projects h2{margin:0;font:600 17px/1.2 Sora,sans-serif;}
+  .projects-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .project-count{font-size:12.5px;color:var(--muted-soft);}
+
+  .project-list{display:flex;flex-direction:column;}
+  .project-item{display:flex;gap:12px;align-items:center;padding:9px 8px;border-top:1px solid var(--border-soft);transition:background .15s;width:100%;box-sizing:border-box;}
+  .project-item:hover{background:var(--row-hover);}
+  .project-index{flex:none;width:30px;height:30px;border-radius:7px;background:var(--index-bg);display:flex;align-items:center;justify-content:center;font:600 12.5px/1 Sora,sans-serif;color:var(--index-fg);}
+  .project-body{flex:1;min-width:0;}
+  .project-name{font:600 15.5px/1.2 Sora,-apple-system,sans-serif;margin-bottom:3px;}
+  .project-desc{font-size:13px;color:var(--muted);line-height:1.35;}
+  .project-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+  .tag{font:500 10.5px/1 ui-monospace,monospace;padding:3px 7px;border-radius:4px;background:var(--tag-bg);color:var(--tag-fg);}
+
+  .placeholder-panel{min-width:0;height:100%;border:1px dashed var(--border-dashed);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .placeholder-panel span{font:500 13.5px/1.4 ui-monospace,monospace;color:var(--muted-softer);}
+
+  footer{margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft);font-size:11px;color:var(--muted-soft);text-align:center;}
+</style>
+</head>
+<body>
+
+<img class="banner" id="banner-img" alt="">
+
+<div class="wrap">
+
+  <header>
+    <div class="identity">
+      <img class="avatar" src="/assets/logo.png" alt="">
+      <div style="min-width:0;">
+        <div class="name-row">
+          <h1>Quinn Yen</h1>
+          <span class="role">軟體工程師・Side Project 愛好者</span>
+        </div>
+        <p class="tagline">個性積極，勇於挑戰、喜愛戶外運動，對於軟體開發有一定熱忱。</p>
+      </div>
+    </div>
+    <div class="icon-links">
+      <a class="icon-link" href="https://github.com/QuinnYen" target="_blank" rel="noopener" title="GitHub">
+        <img src="/assets/github.svg" alt="GitHub" width="30" height="30">
+      </a>
+      <a class="icon-link" href="https://play.xbox.com/user/JaegerYen" target="_blank" rel="noopener" title="Xbox">
+        <img src="/assets/xbox.svg" alt="Xbox" width="30" height="30">
+      </a>
+    </div>
+  </header>
+
+  <button class="theme-toggle" id="theme-toggle" type="button" title="切換深色模式" aria-label="切換深色模式">
+    <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"></svg>
+  </button>
+
+  <main>
+    <section class="projects">
+      <div class="projects-head">
+        <h2>Side Projects</h2>
+        <span class="project-count" id="project-count"></span>
+      </div>
+      <div class="project-list" id="project-list"></div>
+    </section>
+
+    <section class="placeholder-panel">
+      <span>更多內容 — 待補充</span>
+    </section>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span>・以 Firebase Hosting 部署的個人 side project 集
+  </footer>
+
+</div>
+
+<script>
+  var SUN_PATH = '<circle cx="12" cy="12" r="4.5"></circle><path d="M12 2.5v2.5M12 19v2.5M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2.5 12H5M19 12h2.5M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>';
+  var MOON_PATH = '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"></path>';
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('theme-icon').innerHTML = theme === 'dark' ? SUN_PATH : MOON_PATH;
+  }
+
+  function getPreferredTheme() {
+    var stored = null;
+    try { stored = localStorage.getItem('theme'); } catch (e) {}
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  applyTheme(getPreferredTheme());
+
+  document.getElementById('theme-toggle').addEventListener('click', function () {
+    var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+
+  var banners = ['banner-01.jpg', 'banner-02.png'];
+  var chosenBanner = banners[Math.floor(Math.random() * banners.length)];
+  document.getElementById('banner-img').src = '/assets/' + chosenBanner;
+
+  var projects = [
+    { name: '食譜', desc: '收錄的料理與筆記。', tags: ['Firebase Hosting','小米氣炸鍋6.5L'], url: '/recipe/' },
+    { name: 'CatSplit', desc: '分帳軟體。', tags: ['Firebase Hosting','Line'], url: 'https://catsplit-app.web.app/' },
+    { name: '短網址轉址', desc: '短網址產生與轉址服務。', tags: ['Firebase Hosting','私人使用'], url: 'https://shorturl-d6054.web.app/' }
+  ];
+
+  var listEl = document.getElementById('project-list');
+  var countEl = document.getElementById('project-count');
+  countEl.textContent = '共 ' + projects.length + ' 個專案';
+
+  projects.forEach(function (p, i) {
+    var a = document.createElement('a');
+    a.className = 'project-item';
+    a.href = p.url;
+    if (/^https?:\/\//.test(p.url)) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
+
+    var index = document.createElement('div');
+    index.className = 'project-index';
+    index.textContent = String(i + 1).padStart(2, '0');
+
+    var body = document.createElement('div');
+    body.className = 'project-body';
+
+    var name = document.createElement('div');
+    name.className = 'project-name';
+    name.textContent = p.name;
+
+    var desc = document.createElement('div');
+    desc.className = 'project-desc';
+    desc.textContent = p.desc;
+
+    body.appendChild(name);
+    body.appendChild(desc);
+
+    if (p.tags && p.tags.length) {
+      var tagWrap = document.createElement('div');
+      tagWrap.className = 'project-tags';
+      p.tags.forEach(function (t) {
+        var tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = t;
+        tagWrap.appendChild(tag);
+      });
+      body.appendChild(tagWrap);
+    }
+
+    a.appendChild(index);
+    a.appendChild(body);
+    listEl.appendChild(a);
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

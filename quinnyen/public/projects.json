@@ -1,0 +1,91 @@
+[
+  {
+    "title": "CatSplit",
+    "img": "/assets/project-screenshots/catsplit.png",
+    "desc": "分帳軟體。",
+    "tags": [
+      "Firebase Hosting",
+      "Line"
+    ],
+    "url": "/op-catsplit/"
+  },
+  {
+    "title": "食譜",
+    "img": "/assets/project-screenshots/recipe.png",
+    "desc": "收錄的料理與筆記。",
+    "tags": [
+      "Firebase Hosting",
+      "小米氣炸鍋6.5L"
+    ],
+    "url": "/recipe/",
+    "newTab": true
+  },
+  {
+    "title": "短網址轉址",
+    "img": "/assets/project-screenshots/shorturl.png",
+    "desc": "短網址產生與轉址服務。",
+    "tags": [
+      "Firebase Hosting",
+      "私人使用"
+    ],
+    "url": "https://shorturl-d6054.web.app/"
+  },
+  {
+    "title": "中原大學 資管碩士 ABSA",
+    "img": "/assets/project-screenshots/thesis.png",
+    "desc": "碩士論文 HKGAN系統。",
+    "tags": [
+      "Python",
+      "PyTorch"
+    ],
+    "url": "https://github.com/QuinnYen/2026_Thesis_v4"
+  },
+  {
+    "title": "美國台積F21廠 無塵服管理程式",
+    "img": "/assets/project-screenshots/yuchen-f21.png",
+    "desc": "建立每日統計無塵服借出狀況。",
+    "tags": [
+      "Winform",
+      "SQLite"
+    ],
+    "url": ""
+  },
+  {
+    "title": "Ustartech網站更新",
+    "img": "/assets/project-screenshots/ustartech.png",
+    "desc": "按照公司要求翻新網頁。",
+    "tags": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "url": "http://www.ustartech.com/"
+  },
+  {
+    "title": "Ewant報表爬蟲網站",
+    "img": "/assets/project-screenshots/ewant.png",
+    "desc": "用於爬取Ewant課程平台上的課程資料的工具。",
+    "tags": [
+      "Python"
+    ],
+    "url": "https://github.com/QuinnYen/2024_EwantCrawler"
+  },
+  {
+    "title": "iTouch 會計帳目自動抓取程式",
+    "img": "/assets/project-screenshots/itouch.png",
+    "desc": "從中原大學 iTouch 系統中批次擷取並匯出會計帳目資料。",
+    "tags": [
+      "Python"
+    ],
+    "url": "https://github.com/QuinnYen/2025_ItouchAccounting"
+  },
+  {
+    "title": "學習歷程資料分析系統",
+    "img": "/assets/project-screenshots/ahprogram.png",
+    "desc": "專為教育機構設計的學習歷程資料處理與分析系統。",
+    "tags": [
+      "Python"
+    ],
+    "url": "https://github.com/QuinnYen/2025-AH_Program"
+  }
+]

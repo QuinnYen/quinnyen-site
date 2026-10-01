@@ -81,7 +81,7 @@
   a:hover{color:var(--accent);}
   ::selection{background:var(--selection);}
 
-  .banner{width:100%;height:400px;object-fit:cover;display:block;}
+  .banner{width:100%;height:clamp(240px,28vw,400px);object-fit:cover;display:block;}
   .wrap{max-width:1440px;margin:0 auto;padding:0 48px 20px;}
 
   .hero{position:relative;}
@@ -114,20 +114,43 @@
   .card-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
   .card-grid .card{flex:0 0 calc((100% - 28px) / 3);min-width:0;box-sizing:border-box;}
   @media (max-width:600px){
-    .card-grid{gap:8px;}
-    .card-grid .card{flex-basis:calc((100% - 16px) / 3);}
-    .card-title{padding:20px 8px 6px;font-size:13px;}
-    .card-body{padding:8px;}
-    .card-desc{font-size:11.5px;}
+    .card-grid .card{flex-basis:100%;}
   }
+  .pager{display:flex;justify-content:center;gap:6px;margin-top:18px;}
+  .pager button{min-width:34px;height:34px;padding:0 8px;border-radius:8px;border:1px solid var(--panel-border);background:var(--panel);color:var(--fg);font:500 13px/1 Sora,sans-serif;cursor:pointer;transition:background .15s,border-color .15s;}
+  .pager button:hover:not(:disabled){background:var(--panel-hover);}
+  .pager button.current{border-color:var(--accent);color:var(--accent);}
+  .pager button:disabled{opacity:.4;cursor:default;}
   .card{display:flex;flex-direction:column;border:1px solid var(--panel-border);border-radius:12px;overflow:hidden;background:var(--panel);transition:transform .15s,border-color .15s;}
-  .card:hover{transform:translateY(-2px);border-color:var(--accent);color:inherit;}
+  .card[href]:hover{transform:translateY(-2px);border-color:var(--accent);color:inherit;}
   .card-media{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,var(--tag-bg),var(--panel-hover));}
-  .card-media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
   .card-title{position:absolute;left:0;right:0;bottom:0;padding:28px 14px 10px;font:600 16px/1.2 Sora,-apple-system,sans-serif;color:#fff;background:linear-gradient(transparent,oklch(0 0 0 / 0.65));}
   .card-body{padding:10px 14px 14px;}
   .card-desc{font-size:13px;color:var(--muted);line-height:1.4;}
   .card-body .project-tags{margin-top:8px;}
+
+  @media (max-width:800px){
+    .wrap{padding:0 16px 20px;}
+    header{padding:12px 16px;gap:12px;}
+    .identity{gap:12px;}
+    .avatar{width:48px;height:48px;}
+    h1{font-size:20px;}
+    .role{font-size:12.5px;}
+    .tagline{font-size:12.5px;}
+    .icon-links{gap:10px;}
+    .icon-link{width:44px;height:44px;}
+    .icon-link img{width:22px;height:22px;}
+    .theme-toggle{right:14px;bottom:14px;width:42px;height:42px;}
+  }
+  @media (max-width:480px){
+    .banner{height:200px;}
+    header{flex-wrap:nowrap;}
+    .name-row{flex-direction:column;gap:2px;}
+    .tagline{display:none;}
+    .icon-link{width:38px;height:38px;}
+    .icon-link img{width:20px;height:20px;}
+  }
 
   footer{margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft);font-size:11px;color:var(--muted-soft);text-align:center;}
 </style>
@@ -169,10 +192,11 @@
   <main>
     <section class="projects">
       <div class="projects-head">
-        <h2>Side Projects</h2>
+        <h2>Side Projects 和 其他作品</h2>
         <span class="project-count" id="project-count"></span>
       </div>
       <div class="card-grid" id="card-grid"></div>
+      <div class="pager" id="pager"></div>
     </section>
   </main>
 
@@ -211,22 +235,22 @@
   var chosenBanner = banners[Math.floor(Math.random() * banners.length)];
   document.getElementById('banner-img').src = '/assets/' + chosenBanner;
 
-  // img: 圖片路徑（放在 /assets/），留空會顯示漸層底圖
-  var cards = [
-    { title: '食譜', img: '', desc: '收錄的料理與筆記。', tags: ['Firebase Hosting','小米氣炸鍋6.5L'], url: '/recipe/' },
-    { title: 'CatSplit', img: '', desc: '分帳軟體。', tags: ['Firebase Hosting','Line'], url: '/op-catsplit/' },
-    { title: '短網址轉址', img: '', desc: '短網址產生與轉址服務。', tags: ['Firebase Hosting','私人使用'], url: 'https://shorturl-d6054.web.app/' }
-  ];
-
+  var cards = [];
   var gridEl = document.getElementById('card-grid');
-  document.getElementById('project-count').textContent = '共 ' + cards.length + ' 個專案';
-  cards.forEach(function (c) {
+  var pagerEl = document.getElementById('pager');
+  var mobileMq = window.matchMedia('(max-width:600px)');
+  var page = 1;
+  function buildCard(c) {
     var a = document.createElement('a');
     a.className = 'card';
-    a.href = c.url;
-    if (/^https?:\/\//.test(c.url)) {
-      a.target = '_blank';
-      a.rel = 'noopener';
+    if (c.url) {
+      a.href = c.url;
+      if (c.newTab || /^https?:\/\//.test(c.url)) {
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+    } else {
+      a.classList.add('no-link');
     }
 
     var media = document.createElement('div');
@@ -264,8 +288,47 @@
 
     a.appendChild(media);
     a.appendChild(body);
-    gridEl.appendChild(a);
-  });
+    return a;
+  }
+
+  function render() {
+    var size = mobileMq.matches ? 3 : 9;
+    var pages = Math.max(1, Math.ceil(cards.length / size));
+    if (page > pages) page = pages;
+
+    // 一次替換內容，避免中途清空導致頁面變矮、捲動位置被重置
+    var cardFrag = document.createDocumentFragment();
+    cards.slice((page - 1) * size, page * size).forEach(function (c) {
+      cardFrag.appendChild(buildCard(c));
+    });
+    gridEl.replaceChildren(cardFrag);
+
+    var pagerFrag = document.createDocumentFragment();
+    if (pages < 2) { pagerEl.replaceChildren(); return; }
+    function btn(label, target, disabled, current) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.disabled = disabled;
+      if (current) b.className = 'current';
+      b.addEventListener('click', function () { page = target; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      pagerFrag.appendChild(b);
+    }
+    btn('‹', page - 1, page === 1);
+    for (var i = 1; i <= pages; i++) btn(String(i), i, false, i === page);
+    btn('›', page + 1, page === pages);
+    pagerEl.replaceChildren(pagerFrag);
+  }
+
+  // 專案資料在 /projects.json
+  fetch('/projects.json')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      cards = data;
+      document.getElementById('project-count').textContent = '共 ' + cards.length + ' 個專案';
+      render();
+    });
+  mobileMq.addEventListener('change', render);
 
   document.getElementById('year').textContent = new Date().getFullYear();
 </script>

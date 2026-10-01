@@ -84,7 +84,8 @@
   .banner{width:100%;height:400px;object-fit:cover;display:block;}
   .wrap{max-width:1440px;margin:0 auto;padding:0 48px 20px;}
 
-  header{padding:16px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;}
+  .hero{position:relative;}
+  header{position:absolute;left:0;right:0;bottom:0;padding:14px calc(max(0px,(100% - 1440px) / 2) + 48px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:color-mix(in oklab,var(--bg) 60%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
   .identity{display:flex;gap:20px;align-items:center;flex:1;min-width:0;}
   .avatar{width:64px;height:64px;border-radius:50%;flex:none;object-fit:cover;display:block;}
   .name-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
@@ -101,34 +102,40 @@
   .theme-toggle:hover{background:var(--panel-hover);}
   .theme-toggle svg{width:22px;height:22px;}
 
-  main{padding-top:16px;display:grid;grid-template-columns:400px minmax(0,1fr);gap:28px;align-items:stretch;}
-  @media (max-width:800px){ main{grid-template-columns:1fr;} }
+  main{padding-top:16px;}
 
   .projects h2{margin:0;font:600 17px/1.2 Sora,sans-serif;}
   .projects-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
   .project-count{font-size:12.5px;color:var(--muted-soft);}
 
-  .project-list{display:flex;flex-direction:column;}
-  .project-item{display:flex;gap:12px;align-items:center;padding:9px 8px;border-top:1px solid var(--border-soft);transition:background .15s;width:100%;box-sizing:border-box;}
-  .project-item:hover{background:var(--row-hover);}
-  .project-index{flex:none;width:30px;height:30px;border-radius:7px;background:var(--index-bg);display:flex;align-items:center;justify-content:center;font:600 12.5px/1 Sora,sans-serif;color:var(--index-fg);}
-  .project-body{flex:1;min-width:0;}
-  .project-name{font:600 15.5px/1.2 Sora,-apple-system,sans-serif;margin-bottom:3px;}
-  .project-desc{font-size:13px;color:var(--muted);line-height:1.35;}
   .project-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
   .tag{font:500 10.5px/1 ui-monospace,monospace;padding:3px 7px;border-radius:4px;background:var(--tag-bg);color:var(--tag-fg);}
 
-  .placeholder-panel{min-width:0;height:100%;border:1px dashed var(--border-dashed);border-radius:12px;display:flex;align-items:center;justify-content:center;}
-  .placeholder-panel span{font:500 13.5px/1.4 ui-monospace,monospace;color:var(--muted-softer);}
+  .card-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
+  .card-grid .card{flex:0 0 calc((100% - 28px) / 3);min-width:0;box-sizing:border-box;}
+  @media (max-width:600px){
+    .card-grid{gap:8px;}
+    .card-grid .card{flex-basis:calc((100% - 16px) / 3);}
+    .card-title{padding:20px 8px 6px;font-size:13px;}
+    .card-body{padding:8px;}
+    .card-desc{font-size:11.5px;}
+  }
+  .card{display:flex;flex-direction:column;border:1px solid var(--panel-border);border-radius:12px;overflow:hidden;background:var(--panel);transition:transform .15s,border-color .15s;}
+  .card:hover{transform:translateY(-2px);border-color:var(--accent);color:inherit;}
+  .card-media{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,var(--tag-bg),var(--panel-hover));}
+  .card-media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card-title{position:absolute;left:0;right:0;bottom:0;padding:28px 14px 10px;font:600 16px/1.2 Sora,-apple-system,sans-serif;color:#fff;background:linear-gradient(transparent,oklch(0 0 0 / 0.65));}
+  .card-body{padding:10px 14px 14px;}
+  .card-desc{font-size:13px;color:var(--muted);line-height:1.4;}
+  .card-body .project-tags{margin-top:8px;}
 
   footer{margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft);font-size:11px;color:var(--muted-soft);text-align:center;}
 </style>
 </head>
 <body>
 
+<div class="hero">
 <img class="banner" id="banner-img" alt="">
-
-<div class="wrap">
 
   <header>
     <div class="identity">
@@ -150,6 +157,10 @@
       </a>
     </div>
   </header>
+</div>
+
+<div class="wrap">
+
 
   <button class="theme-toggle" id="theme-toggle" type="button" title="切換深色模式" aria-label="切換深色模式">
     <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"></svg>
@@ -161,11 +172,7 @@
         <h2>Side Projects</h2>
         <span class="project-count" id="project-count"></span>
       </div>
-      <div class="project-list" id="project-list"></div>
-    </section>
-
-    <section class="placeholder-panel">
-      <span>更多內容 — 待補充</span>
+      <div class="card-grid" id="card-grid"></div>
     </section>
   </main>
 
@@ -200,51 +207,53 @@
     try { localStorage.setItem('theme', next); } catch (e) {}
   });
 
-  var banners = ['banner-01.jpg', 'banner-02.png'];
+  var banners = ['banner-01.jpg', 'banner-02.jpg'];
   var chosenBanner = banners[Math.floor(Math.random() * banners.length)];
   document.getElementById('banner-img').src = '/assets/' + chosenBanner;
 
-  var projects = [
-    { name: '食譜', desc: '收錄的料理與筆記。', tags: ['Firebase Hosting','小米氣炸鍋6.5L'], url: '/recipe/' },
-    { name: 'CatSplit', desc: '分帳軟體。', tags: ['Firebase Hosting','Line'], url: 'https://catsplit-app.web.app/' },
-    { name: '短網址轉址', desc: '短網址產生與轉址服務。', tags: ['Firebase Hosting','私人使用'], url: 'https://shorturl-d6054.web.app/' }
+  // img: 圖片路徑（放在 /assets/），留空會顯示漸層底圖
+  var cards = [
+    { title: '食譜', img: '', desc: '收錄的料理與筆記。', tags: ['Firebase Hosting','小米氣炸鍋6.5L'], url: '/recipe/' },
+    { title: 'CatSplit', img: '', desc: '分帳軟體。', tags: ['Firebase Hosting','Line'], url: '/op-catsplit/' },
+    { title: '短網址轉址', img: '', desc: '短網址產生與轉址服務。', tags: ['Firebase Hosting','私人使用'], url: 'https://shorturl-d6054.web.app/' }
   ];
 
-  var listEl = document.getElementById('project-list');
-  var countEl = document.getElementById('project-count');
-  countEl.textContent = '共 ' + projects.length + ' 個專案';
-
-  projects.forEach(function (p, i) {
+  var gridEl = document.getElementById('card-grid');
+  document.getElementById('project-count').textContent = '共 ' + cards.length + ' 個專案';
+  cards.forEach(function (c) {
     var a = document.createElement('a');
-    a.className = 'project-item';
-    a.href = p.url;
-    if (/^https?:\/\//.test(p.url)) {
+    a.className = 'card';
+    a.href = c.url;
+    if (/^https?:\/\//.test(c.url)) {
       a.target = '_blank';
       a.rel = 'noopener';
     }
 
-    var index = document.createElement('div');
-    index.className = 'project-index';
-    index.textContent = String(i + 1).padStart(2, '0');
+    var media = document.createElement('div');
+    media.className = 'card-media';
+    if (c.img) {
+      var img = document.createElement('img');
+      img.src = c.img;
+      img.alt = '';
+      img.loading = 'lazy';
+      media.appendChild(img);
+    }
+    var title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = c.title;
+    media.appendChild(title);
 
     var body = document.createElement('div');
-    body.className = 'project-body';
-
-    var name = document.createElement('div');
-    name.className = 'project-name';
-    name.textContent = p.name;
-
+    body.className = 'card-body';
     var desc = document.createElement('div');
-    desc.className = 'project-desc';
-    desc.textContent = p.desc;
-
-    body.appendChild(name);
+    desc.className = 'card-desc';
+    desc.textContent = c.desc;
     body.appendChild(desc);
 
-    if (p.tags && p.tags.length) {
+    if (c.tags && c.tags.length) {
       var tagWrap = document.createElement('div');
       tagWrap.className = 'project-tags';
-      p.tags.forEach(function (t) {
+      c.tags.forEach(function (t) {
         var tag = document.createElement('span');
         tag.className = 'tag';
         tag.textContent = t;
@@ -253,9 +262,9 @@
       body.appendChild(tagWrap);
     }
 
-    a.appendChild(index);
+    a.appendChild(media);
     a.appendChild(body);
-    listEl.appendChild(a);
+    gridEl.appendChild(a);
   });
 
   document.getElementById('year').textContent = new Date().getFullYear();

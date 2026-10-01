@@ -114,7 +114,7 @@
     try { localStorage.setItem('theme', next); } catch (e) {}
   });
 
-  var banners = ['banner-01.jpg', 'banner-02.png'];
+  var banners = ['banner-01.jpg', 'banner-02.jpg'];
   var chosenBanner = banners[Math.floor(Math.random() * banners.length)];
   document.getElementById('banner-img').src = '/assets/' + chosenBanner;
 
